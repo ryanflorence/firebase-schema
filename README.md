@@ -104,6 +104,7 @@ groupsRef.push({ name: 'cool kids table' }, () => {
 groupsRef.getValue((err, groups) => {
   deepEqual(groups[0], {
     name: 'cool kids table',
+    members: { '-Jev95piCGXV9jX4ellH': true },
     _id: '-Jev95pjLLtDmIxbGhcF',
     // woah what's this?
     _indexes: {
@@ -117,7 +118,6 @@ groupsRef.getValue((err, groups) => {
 
   // now you can easily go lookup the users from the members
   var userRef = usersRef.child(groups[0]._indexes.members[0]);
-
 });
 
 // keys work similarly
@@ -131,6 +131,7 @@ coolKidMessages.push({
 coolKidMessages.getValue((err, value) => {
   deepEqual(value[0], {
     content: 'guhhhh i hate 3rd period',
+    author: '-Jev95piCGXV9jX4ellH',
     _id: '-Jev95pjLLtDmIxbGhcF'
     _links: {
       author: 'users/-Jev95piCGXV9jX4ellH'
