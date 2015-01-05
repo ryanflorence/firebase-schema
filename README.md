@@ -61,7 +61,7 @@ var schema = FirebaseSchema.create(Firebase, HOST, (child) => {
 - Now its easy to see what kind of data you save and where. Since the
   schema is defined as a nested route structure, we don't have to leave
   the key:value paradigm of Firebase.
-- Relationships via `index` and `key` get looked up for you
+- Relationships via `index` and `key` get looked up for you (https://www.firebase.com/docs/web/guide/structuring-data.html)
 - Data is validated when you try to `set` or `push` to a path.
 - `list`s are automatically converted to an array when you retrieve the
   value, with their keys assigned to `_id`.
@@ -74,7 +74,13 @@ var groupId;
 
 usersRef.push({name: 'Ryan'}, () => {
   usersRef.getValue((err, val) => {
-    console.log(val); // [{ name: 'Ryan', _id: 'flkajsdf' }]
+    deepEqual(val, [{
+      name: 'Ryan',
+      // woah what's this? since we did `child('users', list, ...)`
+      // we get the values back as an array with their firebase key
+      // set as the `_id`
+      _id: '-Jev95piCGXV9jX4ellH'
+    }])
     userId = val[0]._id;
   });
 });
@@ -87,7 +93,7 @@ groupsRef.push({ name: 'cool kids table' }, () => {
   groupsRef.getValue((err, groups) => {
     groupId = groups[0]._id;
     // define a relationship between the group and the user using
-    // a `key:true` index
+    // a `key:true` index (https://www.firebase.com/docs/web/guide/structuring-data.html)
     groupsRef.child(`${groupId}/members/${userId}`).set(true);
     usersRef.child(`${userId}/groups/${groupId}`).set(true);
   });
@@ -96,11 +102,13 @@ groupsRef.push({ name: 'cool kids table' }, () => {
 // later
 
 groupsRef.getValue((err, groups) => {
-  console.log(groups[0]);
   deepEqual(groups[0], {
     name: 'cool kids table',
     _id: '-Jev95pjLLtDmIxbGhcF',
+    // woah what's this?
     _indexes: {
+      // because we defined `child('members', index(...))` we
+      // get an array of paths to the members of this group
       members: [
         'users/-Jev95piCGXV9jX4ellH'
       ]
