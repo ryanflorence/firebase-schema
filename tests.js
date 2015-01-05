@@ -1,7 +1,7 @@
 var expect = require('expect');
 var async = require('async');
 var Firebase = require('firebase');
-var Schema = require('./index');
+var Schema = require('./src');
 var { string, number, boolean, list, hash, index, key } = Schema.Types;
 console.log(Date.now());
 

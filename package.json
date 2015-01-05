@@ -2,9 +2,10 @@
   "name": "firebase-schema",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist.js",
   "scripts": {
-    "test": "scripts/test --browsers Firefox --single-run"
+    "test": "scripts/test",
+    "prepublish": "scripts/build"
   },
   "author": "Ryan Florence <rpflorence@gmail.com>",
   "license": "MIT",
@@ -25,6 +26,7 @@
     "karma-mocha": "0.1.9",
     "mocha": "2.0.1",
     "react": "0.12.2",
+    "rf-release": "0.4.0",
     "webpack": "1.4.13",
     "webpack-dev-server": "1.6.6",
     "when": "3.6.4"
