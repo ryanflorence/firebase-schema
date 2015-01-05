@@ -15,8 +15,10 @@ Usage
 Define your paths in one place (hey, this looks like a route config):
 
 ```js
-var FirebaseSchema = require('FirebaseSchema');
 var Firebase = require('firebase');
+var FirebaseSchema = require('firebase-schema');
+var { string, number, boolean, list, hash, index, key } = FirebaseSchema.Types;
+
 var HOST = 'http://example.firebaseio.com';
 
 // pass in Firebase so you can use this on the server or client
