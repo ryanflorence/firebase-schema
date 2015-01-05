@@ -111,7 +111,7 @@ groupsRef.getValue((err, groups) => {
 });
 
 // keys work similarly
-var coolKidMessages = schema.createRef(`messages/${groupId});
+var coolKidMessages = schema.createRef(`messages/${groupId}`);
 coolKidMessages.push({
   content: 'guhhhh i hate 3rd period',
   author: userId
