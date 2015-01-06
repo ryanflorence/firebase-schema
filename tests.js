@@ -55,7 +55,7 @@ describe('ref', () => {
       });
     });
 
-    it.only('handles null values for lists', (done) => {
+    it('handles null values for lists', (done) => {
       var schema = Schema.create(Firebase, HOST, (child) => {
         child('test', list, (child) => {
           child(':id', string, (child) => {
