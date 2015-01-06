@@ -34,7 +34,7 @@ var list = {
   },
 
   transform: function (snapshotVal) {
-    return toArray$(snapshotVal);
+    return snapshotVal === null ? null : toArray$(snapshotVal);
   },
 
   toString: function () {
