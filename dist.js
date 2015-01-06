@@ -34,7 +34,7 @@ var list = {
   },
 
   transform: function (snapshotVal) {
-    return snapshotVal === null ? null : toArray$(snapshotVal);
+    return toArray$(snapshotVal);
   },
 
   toString: function () {
@@ -92,6 +92,7 @@ var createRefForReals = function (Firebase, path, routes, host) {
   };
   var parse = function (snapshot, cb) {
     var snapshotVal = snapshot.val();
+    if (snapshotVal === null) return cb(null, null);
     var transformed = handler.transform ? handler.transform(snapshotVal) : snapshotVal;
     addIdForLists(snapshotVal, matchInfo.route, path);
     addRelationships(transformed, matchInfo);
