@@ -38,6 +38,10 @@ var list = {
 };
 
 var hash = {
+  toString () {
+    return 'hash';
+  },
+
   validate (obj, path) {
     error('object' !== typeof obj, `Validation Error: received non-object for path "${path}"`);
   }
@@ -90,9 +94,12 @@ var createRefForReals = (Firebase, path, routes, host) => {
     var snapshotVal = snapshot.val();
     if (snapshotVal === null)
       return cb(null, null);
+    // all of this is garbage, each type should handle the transforms
     var transformed = handler.transform ? handler.transform(snapshotVal) : snapshotVal;
     if (matchInfo.route.handler == 'list')
       transformed = transformListChildren(transformed, routes, path);
+    if (matchInfo.route.handler == 'hash')
+      transformed = transformHash(transformed, routes, path);
     addIdForDirectRefToListChild(transformed, matchInfo.route, path);
     addRelationships(transformed, matchInfo);
     addIndexes(transformed, matchInfo);
@@ -120,11 +127,22 @@ var createRefForReals = (Firebase, path, routes, host) => {
   return { set:set, getValue, push, child, listen };
 };
 
+var transformHash = (child, routes, path) => {
+  Object.keys(child).forEach((key) => {
+    var childPath = `${path}/${key}`;
+    var matchInfo = router.match(childPath, routes);
+    var handler = matchInfo.route.handler;
+    if (handler.transform)
+      child[key] = handler.transform(child[key]);
+  });
+  return child;
+};
+
 var transformListChildren = (children, routes, path) => {
   // should probably recurse here
   return children.map((child) => {
     Object.keys(child).forEach((key) => {
-      if (key === '_id') // hmmm this might get out of hand
+      if (key === '_id') // hmmm, I am dubious of much more of this
         return;
       var childPath = `${path}/${child._id}/${key}`;
       var matchInfo = router.match(childPath, routes);

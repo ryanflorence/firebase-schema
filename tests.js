@@ -44,7 +44,7 @@ describe('ref', () => {
     });
   });
 
-  it('transforms children', (done) => {
+  it('transforms list children', (done) => {
     var testType = {
       validate () {},
       transform (val) {
@@ -66,6 +66,29 @@ describe('ref', () => {
       });
     });
   });
+
+  it('transforms hash children', (done) => {
+    var testType = {
+      validate () {},
+      transform (val) {
+        return val + 1;
+      }
+    };
+    var schema = Schema.create(Firebase, HOST, (child) => {
+      child('test', hash, (child) => {
+        child('n', testType);
+      });
+    });
+    var ref = schema.createRef('test');
+    ref.set({ n: 10 }, () => {
+      ref.getValue((err, val) => {
+        expect(val).toEqual({ n: 11 });
+        done();
+      });
+    });
+  });
+
+
 
   describe('getValue', () => {
     it('handles null values', (done) => {
