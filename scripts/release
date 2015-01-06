@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "# Running scripts/release"
+node_modules/.bin/6to5 src.js > dist.js
+node_modules/.bin/release
+

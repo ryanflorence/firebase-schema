@@ -4,8 +4,7 @@
   "description": "",
   "main": "dist.js",
   "scripts": {
-    "test": "scripts/test",
-    "prepublish": "scripts/build"
+    "test": "scripts/test"
   },
   "author": "Ryan Florence <rpflorence@gmail.com>",
   "license": "MIT",
