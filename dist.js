@@ -240,7 +240,7 @@ var addRelationships = function (val, matchInfo, depth) {
   }
   var path = matchInfo.path;
   var dependencies = []; // terrible name
-  recurseRoutes(matchInfo.route.children, function (route) {
+  recurseRoutes(matchInfo.route.children, function (route, depth) {
     if (route.handler == "key") {
       var relativePath = shrinkPath(route.handler.getPath(), depth);
       dependencies.push({
@@ -248,7 +248,7 @@ var addRelationships = function (val, matchInfo, depth) {
         valueKey: route.path.replace(route.parent.path, "").substr(1)
       });
     }
-  });
+  }, depth - 1);
   if (dependencies.length === 0) return;
   var params = dependencies.reduce(function (params, dependency) {
     var keys = [];
@@ -273,10 +273,11 @@ var replaceParams = function (path, params) {
   return path;
 };
 
-var recurseRoutes = function (routes, iterate) {
+var recurseRoutes = function (routes, iterate, depth) {
+  depth = depth === undefined ? 0 : depth;
   routes.forEach(function (route) {
-    iterate(route);
-    if (route.children) recurseRoutes(route.children, iterate);
+    iterate(route, depth);
+    if (route.children) recurseRoutes(route.children, iterate, depth + 1);
   });
 };
 
