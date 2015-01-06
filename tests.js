@@ -43,6 +43,35 @@ describe('ref', () => {
     });
   });
 
+  describe('getValue', () => {
+    it('handles null values', (done) => {
+      var schema = Schema.create(Firebase, HOST, (child) => {
+        child('test', string);
+      });
+      var ref = schema.createRef('test');
+      ref.getValue((err, val) => {
+        expect(val).toEqual(null);
+        done();
+      });
+    });
+
+    it.only('handles null values for lists', (done) => {
+      var schema = Schema.create(Firebase, HOST, (child) => {
+        child('test', list, (child) => {
+          child(':id', string, (child) => {
+            child('blergh', string);
+          });
+        });
+      });
+      var ref = schema.createRef('test');
+      ref.getValue((err, val) => {
+        expect(val).toEqual(null);
+        done();
+      });
+    });
+
+  });
+
   describe('listen', () => {
     it('listens', (done) => {
       var schema = Schema.create(Firebase, HOST, (child) => {

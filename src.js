@@ -29,7 +29,7 @@ var list = {
   },
 
   transform (snapshotVal) {
-    return toArray$(snapshotVal);
+    return snapshotVal === null ? null : toArray$(snapshotVal);
   },
 
   toString () {
