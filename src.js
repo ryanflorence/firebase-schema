@@ -91,7 +91,9 @@ var createRefForReals = (Firebase, path, routes, host) => {
     if (snapshotVal === null)
       return cb(null, null);
     var transformed = handler.transform ? handler.transform(snapshotVal) : snapshotVal;
-    addIdForLists(snapshotVal, matchInfo.route, path);
+    if (matchInfo.route.handler == 'list')
+      transformed = transformListChildren(transformed, routes, path);
+    addIdForDirectRefToListChild(transformed, matchInfo.route, path);
     addRelationships(transformed, matchInfo);
     addIndexes(transformed, matchInfo);
     cb(null, transformed);
@@ -118,7 +120,23 @@ var createRefForReals = (Firebase, path, routes, host) => {
   return { set:set, getValue, push, child, listen };
 };
 
-var addIdForLists = (val, route, path) => {
+var transformListChildren = (children, routes, path) => {
+  // should probably recurse here
+  return children.map((child) => {
+    Object.keys(child).forEach((key) => {
+      if (key === '_id') // hmmm this might get out of hand
+        return;
+      var childPath = `${path}/${child._id}/${key}`;
+      var matchInfo = router.match(childPath, routes);
+      var handler = matchInfo.route.handler;
+      if (handler.transform)
+        child[key] = handler.transform(child[key]);
+    });
+    return child;
+  });
+};
+
+var addIdForDirectRefToListChild = (val, route, path) => {
   if (route.parent && route.parent.handler == 'list')
     val._id = path.split('/').reverse()[0];
 };

@@ -28,6 +28,7 @@ describe('schema', () => {
       schema.createRef('not-defined')
     }).toThrow(/not found/);
   });
+
 });
 
 describe('ref', () => {
@@ -40,6 +41,29 @@ describe('ref', () => {
     ref.getValue((err, val) => {
       expect(val).toEqual('foo');
       done();
+    });
+  });
+
+  it('transforms children', (done) => {
+    var testType = {
+      validate () {},
+      transform (val) {
+        return val + 1;
+      }
+    };
+    var schema = Schema.create(Firebase, HOST, (child) => {
+      child('test', list, (child) => {
+        child(':id', hash, (child) => {
+          child('n', testType);
+        });
+      });
+    });
+    var ref = schema.createRef('test');
+    ref.push({ n: 10 }, () => {
+      ref.getValue((err, val) => {
+        expect(val).toEqual([{ n: 11, _id: val[0]._id }]);
+        done();
+      });
     });
   });
 
